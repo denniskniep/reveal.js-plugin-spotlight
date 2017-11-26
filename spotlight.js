@@ -3,13 +3,12 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 	var config = Reveal.getConfig().spotlight || {};
 	var spotlightSize = config.size || 40; 
 
-	var container;
+	var drawBoard;
 
 	function onRevealJsReady(event){
-		var result = setupCanvas();
-		container = result.container;
-		var canvas = result.canvas;
-		var context = result.context;
+		drawBoard = setupCanvas();		
+		var canvas = drawBoard.canvas;
+		var context = drawBoard.context;
 
 		canvas.addEventListener('mousemove', function(evt) {
 		  spotlight(canvas, context, getMousePos(canvas, evt));
@@ -19,14 +18,17 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 	}
 
 	function toggleSpotlight(){
-		if(!container) return;
+		if(!drawBoard) return;
 
+		var container = drawBoard.container;
 		if(container.style.display === "none"){
 			container.style.display = "block"; 
 		}
 		else{
 			container.style.display = "none"; 
-		}
+
+			drawBoard.context.clearRect(0,0,drawBoard.canvas.width, drawBoard.canvas.height);
+		}		
 	}
 
 	function setupCanvas() {
