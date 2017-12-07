@@ -37,26 +37,26 @@ Reveal.initialize({
 	spotlight: {
 
 			// size of the spotlight
-		  	size: 60,
+			size: 60,
 
-		  	// toggle spotlight by holding down the mouse key
-		  	toggleSpotlightOnMouseDown: true,
+			// toggle spotlight by holding down the mouse key
+			toggleSpotlightOnMouseDown: true,
 
-		  	// choose the cursor when spotlight is on. Maybe "crosshair"?
-            presentingCursor: "none", 
+			// choose the cursor when spotlight is on. Maybe "crosshair"?
+			presentingCursor: "none", 
 
-            // true: cursor is always "none" except when spotlight is on. 
-            presentingCursorOnlyVisibleWhenSpotlightVisible: true
+			// true: cursor is always "none" except when spotlight is on. 
+			presentingCursorOnlyVisibleWhenSpotlightVisible: true
 	},
 	keyboard: {	
 			// alternative to toggleSpotlightOnMouseDown: 
 			// toggle spotlight by pressing key 'c'
-		  	// 67: function() { RevealSpotlight.toggleSpotlight() },
+			// 67: function() { RevealSpotlight.toggleSpotlight() },
 
-		  	// enter/leave presentation mode by pressing key 'Windows Menu/Right'
-            93: function() { 
-                RevealSpotlight.togglePresentationMode(); 
-            },
+			// enter/leave presentation mode by pressing key 'Windows Menu/Right'
+			93: function() { 
+				RevealSpotlight.togglePresentationMode(); 
+			},
 	},
 	// ...	
 ```
