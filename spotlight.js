@@ -1,34 +1,45 @@
-var RevealSpotlight = window.RevealSpotlight || (function(){
+var RevealSpotlight = window.RevealSpotlight || (function(){	
 
-	var config = Reveal.getConfig().spotlight || {};
-	var spotlightSize = config.size || 40; 
-
+	//configs
+	var spotlightSize; 
+	var toggleOnMouseDown; 
+	var presentingCursor;
+	var presentingCursorOnlyVisibleWhenSpotlightVisible;
+	
 	var drawBoard;
+	var isSpotlightOn = true;
+	var isCursorOn = true;
 
 	function onRevealJsReady(event){
-		drawBoard = setupCanvas();		
-		var canvas = drawBoard.canvas;
-		var context = drawBoard.context;
+		configure();
+		drawBoard = setupCanvas();	
 
-		canvas.addEventListener('mousemove', function(evt) {
-		  spotlight(canvas, context, getMousePos(canvas, evt));
-		}, false);
+		addMouseMoveListener();
 
-		toggleSpotlight();
+		if(toggleOnMouseDown){
+			addMouseToggleSpotlightListener();
+			setCursor(false);
+		}	
+
+		setSpotlight(false);	
 	}
 
-	function toggleSpotlight(){
-		if(!drawBoard) return;
+	function configure(){
+		var config = Reveal.getConfig().spotlight || {};
+		spotlightSize = config.size || 60; 
+		presentingCursor = config.presentingCursor || "none"; 
 
-		var container = drawBoard.container;
-		if(container.style.display === "none"){
-			container.style.display = "block"; 
+		if(config.hasOwnProperty("toggleSpotlightOnMouseDown")){
+			toggleOnMouseDown = config.toggleSpotlightOnMouseDown;
+		}else{
+			toggleOnMouseDown = true;
 		}
-		else{
-			container.style.display = "none"; 
 
-			drawBoard.context.clearRect(0,0,drawBoard.canvas.width, drawBoard.canvas.height);
-		}		
+		if(config.hasOwnProperty("presentingCursorOnlyVisibleWhenSpotlightVisible")){
+			presentingCursorOnlyVisibleWhenSpotlightVisible = config.presentingCursorOnlyVisibleWhenSpotlightVisible;
+		}else{
+			presentingCursorOnlyVisibleWhenSpotlightVisible = true;
+		}
 	}
 
 	function setupCanvas() {
@@ -44,6 +55,7 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 
 		container.appendChild(canvas);			
 		document.body.appendChild(container);
+		container.style.display = "none"; 
 		return {
 			container,
 			canvas,
@@ -51,15 +63,77 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 		}	
 	}
 
-	function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-          x:  evt.clientX - rect.left,
-          y:  evt.clientY - rect.top
-        };
-      }
+	function addMouseMoveListener(){		
+		drawBoard.canvas.addEventListener('mousemove', function(e) {
+		  showSpotlight(e);
+		}, false);
+	}
 
-	function spotlight(canvas, context, mousePos) {
+	function addMouseToggleSpotlightListener(){
+		
+		window.addEventListener("mousedown", function(e) { 
+			if(!isCursorOn){
+				setSpotlight(true);
+				if(presentingCursorOnlyVisibleWhenSpotlightVisible){
+        			document.body.style.cursor = presentingCursor;
+	        	}
+
+				showSpotlight(e);				
+			}				
+		}, false);
+
+		window.addEventListener("mouseup", function(e) { 
+			if(!isCursorOn){
+				setSpotlight(false);
+				if(presentingCursorOnlyVisibleWhenSpotlightVisible){
+        			document.body.style.cursor = "none";
+	        	}				
+			}
+		}, false);		
+	}
+
+	function toggleSpotlight(){		
+		setSpotlight(!isSpotlightOn);
+	}
+
+	function setSpotlight(isOn){
+		isSpotlightOn = isOn;
+		var container = drawBoard.container;
+		if(isOn){
+			container.style.display = "block"; 
+		}
+		else{
+			container.style.display = "none"; 
+			drawBoard.context.clearRect(0,0,drawBoard.canvas.width, drawBoard.canvas.height);
+		}			
+	}
+
+	function togglePresentationMode(){		
+		setCursor(!isCursorOn);
+	}
+
+	function setCursor(isOn){ 
+		isCursorOn = isOn;
+        if(isOn){
+        	document.body.style.userSelect = "auto"; 
+            document.body.style.cursor = "default";                      
+        }else{
+
+        	document.body.style.userSelect = "none"; 
+
+        	if(presentingCursorOnlyVisibleWhenSpotlightVisible){
+        		document.body.style.cursor = "none";
+        	}else{
+        		document.body.style.cursor = presentingCursor;
+        	}        
+        }
+    }
+
+	function showSpotlight(mouseEvt) {
+		var canvas = drawBoard.canvas;
+		var context = drawBoard.context;
+		var mousePos = getMousePos(canvas, mouseEvt);
+
         context.clearRect(0,0,canvas.width, canvas.height);
         
         // Create a canvas mask 
@@ -75,13 +149,21 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
         maskCtx.fillStyle = "#FFFFFFFF";
         maskCtx.arc(mousePos.x, mousePos.y, spotlightSize, 0, 2 * Math.PI);
         maskCtx.fill();
-
-        // Draw mask on the image, and done !
+        
         context.drawImage(maskCanvas, 0, 0);
-      }
+     }
 
-	Reveal.addEventListener('ready',onRevealJsReady);
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x:  evt.clientX - rect.left,
+          y:  evt.clientY - rect.top
+        };
+    }
+
+	Reveal.addEventListener('ready', onRevealJsReady);
 
 	this.toggleSpotlight = toggleSpotlight;
+	this.togglePresentationMode = togglePresentationMode;
 	return this;
 })();
