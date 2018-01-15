@@ -14,6 +14,8 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 		configure();
 		drawBoard = setupCanvas();	
 
+		addWindowResizeListener();
+
 		addMouseMoveListener();
 
 		if(toggleOnMouseDown){
@@ -45,7 +47,7 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 	function setupCanvas() {
 		var container = document.createElement('div');
 		container.id = "spotlight";
-		container.style ="position:absolute;top:0px;left:0px;z-index:99;";		
+		container.style.cssText ="position:absolute;top:0;left:0;bottom:0;right:0;z-index:99;";
 
 		var canvas = document.createElement('canvas');
 		var context = canvas.getContext("2d");
@@ -61,6 +63,14 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 			canvas,
 			context
 		}	
+	}
+
+	function addWindowResizeListener() {
+		window.addEventListener('resize', function (e) {
+			var canvas = drawBoard.canvas;
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		}, false);
 	}
 
 	function addMouseMoveListener(){		
