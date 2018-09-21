@@ -5,6 +5,7 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 	var toggleOnMouseDown; 
 	var presentingCursor;
 	var presentingCursorOnlyVisibleWhenSpotlightVisible;
+	var useAsPointer;
 	
 	var drawBoard;
 	var isSpotlightOn = true;
@@ -30,6 +31,7 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 		var config = Reveal.getConfig().spotlight || {};
 		spotlightSize = config.size || 60; 
 		presentingCursor = config.presentingCursor || "none"; 
+		useAsPointer = config.useAsPointer || false;
 
 		if(config.hasOwnProperty("toggleSpotlightOnMouseDown")){
 			toggleOnMouseDown = config.toggleSpotlightOnMouseDown;
@@ -151,8 +153,12 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
         maskCanvas.width = canvas.width;
         maskCanvas.height = canvas.height;
         
-        var maskCtx = maskCanvas.getContext('2d');
-        maskCtx.fillStyle = "#000000A8";
+				var maskCtx = maskCanvas.getContext('2d');
+
+				// If using as pointer draw a transparent background
+				var fillStyle = useAsPointer ? "rgba(0, 0, 0, 0)" : "#000000A8"
+
+				maskCtx.fillStyle = fillStyle;
         maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
         maskCtx.globalCompositeOperation = 'xor';
                
