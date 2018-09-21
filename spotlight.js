@@ -6,6 +6,7 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 	var presentingCursor;
 	var presentingCursorOnlyVisibleWhenSpotlightVisible;
 	var useAsPointer;
+	var pointerColor;
 	
 	var drawBoard;
 	var isSpotlightOn = true;
@@ -32,6 +33,7 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
 		spotlightSize = config.size || 60; 
 		presentingCursor = config.presentingCursor || "none"; 
 		useAsPointer = config.useAsPointer || false;
+		pointerColor = config.pointerColor || 'red';
 
 		if(config.hasOwnProperty("toggleSpotlightOnMouseDown")){
 			toggleOnMouseDown = config.toggleSpotlightOnMouseDown;
@@ -162,7 +164,11 @@ var RevealSpotlight = window.RevealSpotlight || (function(){
         maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
         maskCtx.globalCompositeOperation = 'xor';
                
-        maskCtx.fillStyle = "#FFFFFFFF";
+
+				// If using as pointer draw specified color or default
+				var mouseFillStyle = useAsPointer ? pointerColor : "#FFFFFFFF"
+
+				maskCtx.fillStyle = mouseFillStyle;
         maskCtx.arc(mousePos.x, mousePos.y, spotlightSize, 0, 2 * Math.PI);
         maskCtx.fill();
         
