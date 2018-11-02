@@ -52,7 +52,7 @@ Reveal.initialize({
 			useAsPointer: true,
 
 			// pointer color (If pointer mode enabled)
-			pointerColor
+			pointerColor: 'red'
 	},
 	keyboard: {	
 			// alternative to toggleSpotlightOnMouseDown: 
@@ -93,14 +93,14 @@ When you are in presentation mode the cursor is always "none" except when spotli
 Configuration item `presentingCursor` is always used as cursor value, when you are in presentation mode.
 
 #### useAsPointer
-Default: false
+Default: `false`
 
 Enables a mode where the screen is not dimmed and you can use the mouse as a pointer.
 
 #### pointerColor
 Default: `red`
 
-Defines the pointer color if configuration item `useAsPointer` is true.
+Defines the pointer color if configuration item `useAsPointer` is `true`.
 
 ### Methods
 
