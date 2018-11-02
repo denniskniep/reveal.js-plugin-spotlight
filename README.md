@@ -8,6 +8,9 @@ It is off by default and you can trigger it with a keyboard press.
 
 ![](img/demo.gif) 
 
+## Hardware
+I use "Aplic Wireless Mini Air Mouse" as presenter
+
 ## Installation
 
 ### Copy
