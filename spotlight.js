@@ -5,8 +5,7 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
   var toggleOnMouseDown;
   var presentingCursor;
   var presentingCursorOnlyVisibleWhenSpotlightVisible;
-  var useAsPointer;
-  var pointerColor;
+  var style;
 
   var drawBoard;
   var isSpotlightOn = true;
@@ -32,8 +31,22 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     var config = Reveal.getConfig().spotlight || {};
     spotlightSize = config.size || 60;
     presentingCursor = config.presentingCursor || "none";
-    useAsPointer = config.useAsPointer || false;
-    pointerColor = config.pointerColor || 'red';
+    var useAsPointer = config.useAsPointer || false;
+    var pointerColor = config.pointerColor || 'red';
+
+    // If using as pointer draw a transparent background and
+    // the mouse pointer in the specified color or default
+    var pointerStyle = {
+      backgroundFillStyle : "rgba(0, 0, 0, 0)",
+      mouseFillStyle : pointerColor
+    };
+
+    var spotlightStyle = {
+      backgroundFillStyle : "#000000A8",
+      mouseFillStyle : "#FFFFFFFF"
+    };
+
+    style = useAsPointer ? pointerStyle : spotlightStyle;
 
     if (config.hasOwnProperty("toggleSpotlightOnMouseDown")) {
       toggleOnMouseDown = config.toggleSpotlightOnMouseDown;
@@ -158,17 +171,11 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
 
     var maskCtx = maskCanvas.getContext('2d');
 
-    // If using as pointer draw a transparent background
-    var fillStyle = useAsPointer ? "rgba(0, 0, 0, 0)" : "#000000A8"
-
-    maskCtx.fillStyle = fillStyle;
+    maskCtx.fillStyle = style.backgroundFillStyle;
     maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
     maskCtx.globalCompositeOperation = 'xor';
 
-    // If using as pointer draw specified color or default
-    var mouseFillStyle = useAsPointer ? pointerColor : "#FFFFFFFF"
-
-    maskCtx.fillStyle = mouseFillStyle;
+    maskCtx.fillStyle = style.mouseFillStyle;
     maskCtx.arc(mousePos.x, mousePos.y, spotlightSize, 0, 2 * Math.PI);
     maskCtx.fill();
 

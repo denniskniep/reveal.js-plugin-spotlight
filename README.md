@@ -96,6 +96,7 @@ Configuration item `presentingCursor` is always used as cursor value, when you a
 Default: `false`
 
 Enables a mode where the screen is not dimmed and you can use the mouse as a pointer.
+While using this option it makes sense to reduce the `size` to `6`
 
 #### pointerColor
 Default: `red`
