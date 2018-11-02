@@ -6,6 +6,8 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
   var presentingCursor;
   var presentingCursorOnlyVisibleWhenSpotlightVisible;
   var style;
+  var lockPointerInsideCanvas;
+  var getMousePos;
 
   var drawBoard;
   var isSpotlightOn = true;
@@ -33,6 +35,13 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     presentingCursor = config.presentingCursor || "none";
     var useAsPointer = config.useAsPointer || false;
     var pointerColor = config.pointerColor || 'red';
+    lockPointerInsideCanvas = config.lockPointerInsideCanvas || false;
+
+    if(lockPointerInsideCanvas){
+      getMousePos = getMousePosByMovement;
+    } else {
+      getMousePos = getMousePosByBoundingClientRect;
+    }
 
     // If using as pointer draw a transparent background and
     // the mouse pointer in the specified color or default
@@ -93,13 +102,19 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
 
   function addMouseMoveListener() {
     drawBoard.canvas.addEventListener('mousemove', function (e) {
-      showSpotlight(e);
+      if(isSpotlightOn) {
+        showSpotlight(e);
+      }
     }, false);
   }
 
   function addMouseToggleSpotlightListener() {
 
     window.addEventListener("mousedown", function (e) {
+      if (lockPointerInsideCanvas && document.pointerLockElement != drawBoard.canvas) {
+        drawBoard.canvas.requestPointerLock();
+      }
+
       if (!isCursorOn) {
         setSpotlight(true);
         if (presentingCursorOnlyVisibleWhenSpotlightVisible) {
@@ -182,7 +197,35 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     context.drawImage(maskCanvas, 0, 0);
   }
 
-  function getMousePos(canvas, evt) {
+  var mX = 0;
+  var mY = 0;
+
+  function getMousePosByMovement(canvas, evt) {
+    var movementX = evt.movementX || 0;
+    var movementY = evt.movementY || 0;
+    mX += movementX;
+    mY += movementY;
+
+    if (mX > canvas.clientWidth) {
+      mX = canvas.clientWidth;
+    }
+    if (mY > canvas.clientHeight) {
+      mY = canvas.clientHeight;
+    }
+    if (mX < 0) {
+      mX = 0;
+    }
+    if (mY < 0) {
+      mY = 0;
+    }
+
+    return {
+      x: mX,
+      y: mY
+    };
+  }
+
+  function getMousePosByBoundingClientRect(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
       x: evt.clientX - rect.left,
