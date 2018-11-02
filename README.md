@@ -38,12 +38,15 @@ Reveal.initialize({
 
 			// size of the spotlight
 			size: 60,
+			
+			// true: Locks the mouse pointer inside the presentation
+			lockPointerInsideCanvas: false,
 
 			// toggle spotlight by holding down the mouse key
 			toggleSpotlightOnMouseDown: true,
 
 			// choose the cursor when spotlight is on. Maybe "crosshair"?
-			presentingCursor: "none", 
+			presentingCursor: 'none', 
 
 			// true: cursor is always "none" except when spotlight is on. 
 			presentingCursorOnlyVisibleWhenSpotlightVisible: true,
@@ -69,22 +72,33 @@ Reveal.initialize({
 
 ### Configuration items
 #### size
-Default: 60
+Default: `60`
 
 Configure the size of the spotlight
 
+#### lockPointerInsideCanvas
+Default: `false`
+
+`true`:
+Locks the mouse pointer inside the presentation. Press `Esc` to undo the lock. 
+
+This is very useful especially when you present with a Presenter or a Wireless Air Mouse. 
+Furthermore helpful if you have two screens (i.e. Beamer and Laptopscreen)
+
+This feature relies on the experimental Browser Feature [PointerLock](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestPointerLock)
+
 #### toggleSpotlightOnMouseDown
-Default: true
+Default: `true`
 
 Toggle spotlight by holding down the mouse key. And switching to the cursor provided by the configuration item `presentingCursor`, if configuration item `presentingCursorOnlyVisibleWhenSpotlightVisible` is true.
 
 #### presentingCursor
-Default: "none"
+Default: `none`
 
 Set the cursor value when presentation mode is toggled by `togglePresentationMode()`. Maybe "crosshair"?
 
 #### presentingCursorOnlyVisibleWhenSpotlightVisible
-Default: true
+Default: `true`
 
 `true`:
 When you are in presentation mode the cursor is always "none" except when spotlight is on. Then it uses the configuration item `presentingCursor` as cursor value.
