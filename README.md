@@ -48,11 +48,23 @@ Reveal.initialize({
 			// toggle spotlight by holding down the mouse key
 			toggleSpotlightOnMouseDown: true,
 
+			// the keyCode pressed and held to turn on spotlight, disabled when set to false
+			spotlightOnKeyPressAndHold: false,
+
 			// choose the cursor when spotlight is on. Maybe "crosshair"?
+			spotlightCursor: 'none',
+
+			// choose the cursor when spotlight is off and in presentation mode. Maybe "default"?
 			presentingCursor: 'none', 
 
-			// true: cursor is always "none" except when spotlight is on. 
-			presentingCursorOnlyVisibleWhenSpotlightVisible: true,
+			// true: initially in presentation mode, will be ture if this is not set and toggleSpotlightOnMouseDown is true
+			initialPresentationMode: true,
+
+			// true: disable selecting in presentation mode
+			disablingUserSelect: true,
+
+			// set to a number as transition duration to enable fade in and out
+			fadeInAndOut: false,
 
 			// enable pointer mode
 			useAsPointer: true,
