@@ -32,7 +32,7 @@ Reveal.initialize({
 ```
 
 ## Configuration
-The plugin can be configured by providing a spotlight option containing an object i.e. with `size` and other configuration items within the reveal.js initialization options. By default spotlight is toggled by mouse down event. There is no cursor visible by default. You can switch from 'presentation mode' to 'normal mode' by pressing the 'Windows Menu / Right' key. But you can change this default behaviour.
+The plugin can be configured by providing a spotlight option containing an object i.e. with `size` and other configuration items within the reveal.js initialization options. By default spotlight is toggled by mouse down event. There is no cursor visible by default. You can switch from 'presentation mode' to 'normal mode' by pressing the 'p' key. But you can change this default behaviour.
 
 ```javascript
 Reveal.initialize({
