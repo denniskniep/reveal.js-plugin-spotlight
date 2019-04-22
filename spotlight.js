@@ -205,6 +205,7 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
       setSpotlight(false);
       if (disablingUserSelect) {
         document.body.style.userSelect = null;
+        document.body.style.MozUserSelect = null;
       }
       document.body.style.cursor = null;
       if(lockPointerInsideCanvas && document.pointerLockElement === drawBoard.canvas){
@@ -213,6 +214,7 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     } else {
       if (disablingUserSelect) {
         document.body.style.userSelect = "none";
+        document.body.style.MozUserSelect = "none";
       }
       if (lockPointerInsideCanvas && document.pointerLockElement != drawBoard.canvas) {
         drawBoard.canvas.requestPointerLock();
