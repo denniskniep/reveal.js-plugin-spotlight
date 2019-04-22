@@ -35,8 +35,8 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
       addKeyPressAndHoldSpotlightListener(spotlightOnKeyPressAndHold);
     }
 
-    setCursor(!initialPresentationMode);
     setSpotlight(false);
+    setCursor(!initialPresentationMode);
   }
 
   function configure() {
@@ -133,7 +133,7 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
   }
 
   function addMouseMoveListener() {
-    document.body.addEventListener('mousemove', function (e) {
+    window.addEventListener('mousemove', function (e) {
       if(isSpotlightOn) {
         showSpotlight(e);
       }
@@ -159,7 +159,7 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
   function addKeyPressAndHoldSpotlightListener(keyCode) {
 
     window.addEventListener("keydown", function (e) {
-      if (!isCursorOn && !isSpotlightOn && e.keyCode === keyCode) {
+      if (!isCursorOn && e.keyCode === keyCode) {
         setSpotlight(true, lastMouseMoveEvent);
       }
     }, false);
@@ -202,13 +202,20 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
   function setCursor(isOn) {
     isCursorOn = isOn;
     if (isOn) {
+      setSpotlight(false);
       if (disablingUserSelect) {
         document.body.style.userSelect = null;
       }
       document.body.style.cursor = null;
+      if(lockPointerInsideCanvas && document.pointerLockElement === drawBoard.canvas){
+        document.exitPointerLock();
+      }
     } else {
       if (disablingUserSelect) {
         document.body.style.userSelect = "none";
+      }
+      if (lockPointerInsideCanvas && document.pointerLockElement != drawBoard.canvas) {
+        drawBoard.canvas.requestPointerLock();
       }
       document.body.style.cursor = presentingCursor;
     }
