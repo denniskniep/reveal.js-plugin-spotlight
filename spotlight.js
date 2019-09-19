@@ -7,11 +7,11 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
   var presentingCursor;
   var spotlightCursor;
   var initialPresentationMode;
-  var disablingUserSelect;
   var fadeInAndOut;
   var style;
   var lockPointerInsideCanvas;
   var getMousePos;
+  var allowedMouseButtons;
 
   var drawBoard;
   var isSpotlightOn = true;
@@ -86,23 +86,23 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
       spotlightOnKeyPressAndHold = false;
     }
 
-    if (config.hasOwnProperty("disablingUserSelect")) {
-      disablingUserSelect = config.disablingUserSelect;
-    } else {
-      disablingUserSelect = true;
-    }
-
     if (config.hasOwnProperty("fadeInAndOut")) {
       fadeInAndOut = config.fadeInAndOut;
     } else {
       fadeInAndOut = false;
+    }
+
+    if (config.hasOwnProperty("allowedMouseButtons")) {
+      allowedMouseButtons = config.allowedMouseButtons;
+    } else {
+      allowedMouseButtons = [0, 1]; // left key and middle key
     }
   }
 
   function setupCanvas() {
     var container = document.createElement('div');
     container.id = "spotlight";
-    container.style.cssText = "position:absolute;top:0;left:0;bottom:0;right:0;z-index:99;";
+    container.style.cssText = "position:absolute;top:0;left:0;bottom:0;right:0;z-index:99;pointer-events: none;";
     if (fadeInAndOut) {
       container.style.cssText += "transition: " + fadeInAndOut + "ms opacity;";
     }
@@ -116,7 +116,6 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     container.appendChild(canvas);
     document.body.appendChild(container);
     container.style.opacity = 0;
-    container.style['pointer-events'] = 'none';
     return {
       container,
       canvas,
@@ -141,16 +140,19 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     }, false);
   }
 
+  function isAllowedButton(button) {
+    return ~allowedMouseButtons.indexOf(button);
+  }
   function addMouseToggleSpotlightListener() {
 
     window.addEventListener("mousedown", function (e) {
-      if (!isCursorOn) {
+      if (!isCursorOn && isAllowedButton(e.button)) {
         setSpotlight(true, e);
       }
     }, false);
 
     window.addEventListener("mouseup", function (e) {
-      if (!isCursorOn) {
+      if (!isCursorOn && isAllowedButton(e.button)) {
         setSpotlight(false, e);
       }
     }, false);
@@ -183,14 +185,12 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
         drawBoard.canvas.requestPointerLock();
       }
       container.style.opacity = 1;
-      container.style['pointer-events'] = null;
       document.body.style.cursor = spotlightCursor;
       if (mouseEvt) {
         showSpotlight(mouseEvt);
       }
     } else {
       container.style.opacity = 0;
-      container.style['pointer-events'] = 'none';
       document.body.style.cursor = presentingCursor;
     }
   }
@@ -203,19 +203,11 @@ var RevealSpotlight = window.RevealSpotlight || (function () {
     isCursorOn = isOn;
     if (isOn) {
       setSpotlight(false);
-      if (disablingUserSelect) {
-        document.body.style.userSelect = null;
-        document.body.style.MozUserSelect = null;
-      }
       document.body.style.cursor = null;
       if(lockPointerInsideCanvas && document.pointerLockElement === drawBoard.canvas){
         document.exitPointerLock();
       }
     } else {
-      if (disablingUserSelect) {
-        document.body.style.userSelect = "none";
-        document.body.style.MozUserSelect = "none";
-      }
       if (lockPointerInsideCanvas && document.pointerLockElement != drawBoard.canvas) {
         drawBoard.canvas.requestPointerLock();
       }
